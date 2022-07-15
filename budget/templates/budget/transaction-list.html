@@ -1,0 +1,41 @@
+{% extends 'budget/base.html' %}
+{% block content %}
+    <div class="row d-flex justify-content-center">"
+        <div class="content-section col-md-8">
+            <h1> All Transactions for {{ user.username }} ({{ page_obj.paginator.count }})</h1>
+            <ul class="list-group">
+                {% for transaction in transactions %}
+                <li class="list-group-item m-1">
+                    <h3>{{ transaction.name }} - ${{ transaction.amount }}</h3>
+                    <p>{{ transaction.description }}</p>
+                    <p>{{ transaction.date_of_transaction|date:"F d, Y" }}</p>
+                    <small class="text-muted">
+                        <a href="{% url 'transaction-update' transaction.id %}">Edit</a> | <a href="{% url 'transaction-delete' transaction.id %}">Delete</a>
+                    </small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% if is_paginated %}
+
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-outline-secondary mb-4" href="?page=1">First</a>
+                    <a class="btn btn-outline-secondary mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <a class="btn btn-secondary mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a class="btn btn-outline-secondary mb-4" href="?page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-secondary mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a class="btn btn-outline-secondary mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

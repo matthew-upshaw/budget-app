@@ -1,0 +1,117 @@
+{% extends "budget/base.html" %}
+{% block content %}
+<div class="row d-flex justify-content-center">
+    <div class="content-section col-md-7 p-2 ml-2 mr-1">
+        <h1>Overview</h1>
+        <div class="row d-flex justify-content-center">
+            <form id="filterForm">
+                <label for="year">Choose a year:</label>
+                <select name="year" id="year"></select>
+                <label for="month">Choose a month:</label>
+                <select name="month" id="month"></select>
+                <input type="submit" value="Load" name="_load">
+            </form>
+        </div>
+        <div class="container">
+            <canvas id="expensesByCategoryPerMonthChart"></canvas>
+        </div>
+        <script>
+            $(document).ready(function() {
+                $.ajax({
+                    url: "/budget/chart/filter-options",
+                    type: "GET",
+                    dataType: "json",
+                    success: (jsonResponse) => {
+                        // Load all the options
+                        jsonResponse.year_options.forEach(option => {
+                            $("#year").append(new Option(option, option));
+                        });
+                        jsonResponse.month_options.forEach(option => {
+                            $("#month").append(new Option(option, option));
+                        });
+                        // Load the data for the first option
+                        const current_date = new Date();
+                        let current_month = current_date.getMonth();
+                        loadAllCharts($("#year").children().first().val(),current_month+1);
+                    },
+                    error: () => console.log("Failed to fetch chart filter options!")
+                });
+            });
+
+            $("#filterForm").on("submit", (event) => {
+                event.preventDefault();
+
+                const year = $("#year").val();
+                const month = $("#month").val();
+                loadAllCharts(year, month);
+            });
+
+            function loadChart(chart, endpoint) {
+                $.ajax({
+                    url: endpoint,
+                    type: "GET",
+                    dataType: "json",
+                    success: (jsonResponse) => {
+                        // Extract data from the response
+                        const title = jsonResponse.title;
+                        const labels = jsonResponse.data.labels;
+                        const datasets = jsonResponse.data.datasets;
+                        // Reset the current chart
+                        chart.data.datasets = []
+                        chart.data.labels = []
+                        // Load new data into the chart
+                        chart.options.title.text = title;
+                        chart.options.title.display = true;
+                        chart.data.labels = labels;
+                        datasets.forEach(dataset => {
+                            chart.data.datasets.push(dataset);
+                        });
+                        chart.update();
+                    },
+                    error: () => console.log("Failed to fetch chart data from " + endpoint + "!")
+                });
+            }
+
+            function loadAllCharts(year, month) {
+                loadChart(expensesByCategoryPerMonthChart, `/budget/chart/expenses/${year}/${month}/`);
+            }
+        </script>
+        <script>
+            let expensesByCategoryPerMonthCtx = document.getElementById("expensesByCategoryPerMonthChart").getContext("2d");
+            let expensesByCategoryPerMonthChart = new Chart(expensesByCategoryPerMonthCtx, {
+                type:"bar",
+                options: {
+                    responsive: true,
+                }
+            });
+        </script>
+    </div>
+    <div class="content-section col-md-3 p-2 ml-1 mr-2">
+        <h1>Recent Expenses</h1>
+        <ul class="list-group">
+            {% for expense in recent_expense_list %}
+            <li class="list-group-item">
+                <p style="font-weight: bold;">{{ expense.name }} - ${{ expense.amount }}</p>
+                <p>{{ expense.date_of_transaction|date:"F d, Y" }}</p>
+                <small class="text-muted">
+                    <a href="{% url 'transaction-update' expense.id %}">Edit</a> | <a href="{% url 'transaction-delete' expense.id %}">Delete</a>
+                </small>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="row d-flex justify-content-center">
+            <h4 class="mt-5">
+                <a href="{% url 'transaction-list' user.username %}">See All</a> | <a href="{% url 'add-transaction' %}">Add New</a>
+            </h4>
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex justify-content-center">
+    <div class="content-section col-md-10 p-2 ml-1 mr-1">
+        <h1>Insights</h1>
+        <p>Total Income in {% now "F" %}: ${{ total_payments.total_amount }}</p>
+        <p>Total Expenses in {% now "F" %}: ${{ total_expenses.total_amount }}</p>
+    </div>
+</div>
+{% endblock content %}
