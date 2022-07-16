@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
@@ -158,3 +158,14 @@ EMAIL_HOST_USER = config['EMAIL_USER']
 EMAIL_HOST_PASSWORD = config['EMAIL_PASS']
 
 DEFAULT_FROM_EMAIL = 'adimeadozen<noreply@adimeadozen.io>'
+
+# Change to development settings if in development environment
+if config['SETTING'] == 'DEV':
+    DEBUG = True
+    ALLOWED_HOSTS = []
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
