@@ -30,7 +30,8 @@ SECRET_KEY = config['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.adimeadozen.io','adimeadozen.io','34.172.169.19']
+<<<<<<< HEAD
+ALLOWED_HOSTS = [config['DOMAIN_NAME'],config['NAKED_DOMAIN']]
 
 
 # Application definition
@@ -91,18 +92,6 @@ DATABASES = {
     }
 }
 
-'''DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-        'NAME': config['DB_NAME'],
-        'USER': config['DB_USER'],
-        'PASSWORD': config['DB_PASSWORD'],
-    }
-}'''
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -157,15 +146,23 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config['EMAIL_USER']
 EMAIL_HOST_PASSWORD = config['EMAIL_PASS']
 
-DEFAULT_FROM_EMAIL = 'adimeadozen<noreply@adimeadozen.io>'
+DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 
 # Change to development settings if in development environment
 if config['SETTING'] == 'DEV':
     DEBUG = True
     ALLOWED_HOSTS = []
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
