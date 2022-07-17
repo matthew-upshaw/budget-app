@@ -30,9 +30,7 @@ SECRET_KEY = config['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-<<<<<<< HEAD
 ALLOWED_HOSTS = [config['DOMAIN_NAME'],config['NAKED_DOMAIN']]
-
 
 # Application definition
 
@@ -150,7 +148,6 @@ DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
 
 # Change to development settings if in development environment
 if config['SETTING'] == 'DEV':
