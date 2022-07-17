@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django.forms.widgets import DateInput
 from . models import (
     Transaction,
 )
@@ -16,4 +17,8 @@ class TransactionForm(ModelForm):
             'date_of_transaction':'Date',
             'transaction_category':'Category',
             'payment_method':'Payment Method',
+        }
+
+        widgets = {
+            'date_of_transaction':DateInput(attrs={'type':'date'})
         }
