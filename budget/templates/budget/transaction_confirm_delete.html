@@ -1,6 +1,7 @@
 {% extends "budget/base.html" %}
 {% block content %}
-    <div class="content-section">
+<div class="d-flex justify-content-center">
+    <div class="content-section col-md-8">
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -8,9 +9,10 @@
                 <h2>Are you sure you want to delete this transaction?</h2>
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
-                <a class="btn btn-outline-secondary" href="{% url 'transaction-detail' object.id %}">Cancel</a>
+                <button class="btn btn-outline-danger mt-2" type="submit">Yes, Delete</button>
+                <a class="btn btn-outline-info mt-2" href="{% url 'transaction-list' user.username %}">Cancel</a>
             </div>
         </form>
     </div>
+</div>
 {% endblock content %}

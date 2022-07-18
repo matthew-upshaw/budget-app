@@ -1,17 +1,20 @@
 {% extends "budget/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-  <h1>Add New Transaction</h1>
-    <div class="content-section">
-      <form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-          <legend class="border-bottom mb-4">New Expense/Payment</legend>
-          {{ form|crispy }}
-        </fieldset>
-        <div class="form-group">
-          <button class="btn btn-outline-info mt-4" type="submit">Add</button>
-        </div>
-      </form>
-    </div>
+<div class="d-flex justify-content-center">
+  <div class="content-section col-md-8">    
+    <h1>Add New Transaction</h1>
+    <form method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">New Expense/Payment</legend>
+        {{ form|crispy }}
+      </fieldset>
+      <div class="form-group">
+        <button class="btn btn-outline-info mt-2" type="submit">Add</button>
+        <a class="btn btn-outline-danger mt-2" href = "{% url 'adad-home' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock content %}
